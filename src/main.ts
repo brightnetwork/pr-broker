@@ -1,19 +1,47 @@
-import * as core from '@actions/core'
-import {wait} from './wait'
+import * as core from "@actions/core";
+import * as github from "@actions/github";
+
+import {updateOutToDatePR} from "./cd";
+import {PRPayload} from "./types";
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    core.setOutput('time', new Date().toTimeString())
+    const context = github.context;
+    // eslint-disable-next-line no-console
+    console.log(
+      JSON.stringify(
+        {
+          payload: context.payload,
+          repo: context.repo,
+          issue: context.issue,
+          eventName: context.eventName,
+          sha: context.sha,
+          ref: context.ref,
+          workflow: context.workflow,
+          action: context.action,
+          actor: context.actor,
+          job: context.job,
+          runNumber: context.runNumber,
+          runId: context.runId,
+        },
+        null,
+        2,
+      ),
+    );
+    const payload = {...context.payload};
+    payload.repository = {
+      name: github.context.repo.repo,
+      owner: {
+        login: github.context.repo.owner,
+      },
+    };
+    await updateOutToDatePR({
+      payload: payload as PRPayload,
+      octokit: github.getOctokit(process.env.GITHUB_TOKEN as string),
+    });
   } catch (error) {
-    core.setFailed(error.message)
+    core.setFailed(error.message);
   }
 }
 
-run()
+run();
