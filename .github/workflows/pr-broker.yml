@@ -1,0 +1,17 @@
+name: pr-broker
+
+on:
+  pull_request_review:
+  push:
+    branches:
+      - main
+
+jobs:
+  run-pr-broker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: local pr-broker
+        uses: ./
+        env:
+          GITHUB_TOKEN: ${{secrets.P9F_GITHUB_TOKEN}}
