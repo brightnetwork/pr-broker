@@ -1,7 +1,7 @@
 import * as _ from "lodash/fp";
 
 import {Await, PRContext} from "./types";
-import {updatePr, addLabels, getIssuesByLabel, removeLabel} from "./github";
+import {addLabels, getIssuesByLabel, removeLabel, updatePr} from "./github";
 import type {getOctokit} from "@actions/github";
 
 const MAIN_BRANCH = "main";
