@@ -1,8 +1,8 @@
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 
-import {updateOutToDatePR} from "./cd";
 import {PRPayload} from "./types";
+import {updateOutToDatePR} from "./cd";
 
 async function run(): Promise<void> {
   try {
